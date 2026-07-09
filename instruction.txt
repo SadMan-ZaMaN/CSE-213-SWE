@@ -1,0 +1,194 @@
+Great. Now your setup is correct. In the future, follow this workflow:
+
+### 1. Always open the **project root folder** in VS Code
+
+For your design pattern project:
+
+Open:
+
+```
+F:\CSE-213_Design_Pattern
+```
+
+Do **not** open:
+
+```
+F:\CSE-213_Design_Pattern\Creational
+```
+
+or
+
+```
+F:\CSE-213_Design_Pattern\Creational\Singleton
+```
+
+because your package starts with:
+
+```java
+package Creational.Singleton;
+```
+
+The folder path must match the package path.
+
+---
+
+
+
+
+
+
+
+### 2. Keep this structure
+
+```
+CSE-213_Design_Pattern
+│
+├── Creational
+│   └── Singleton
+│       ├── Example.java
+│       ├── Food.java
+│       └── Khana.java
+│
+├── Structural
+│   └── Adapter
+│       └── ...
+│
+└── Behavioral
+    └── Observer
+        └── ...
+```
+
+Example:
+
+Inside:
+
+```
+Creational/Singleton/Food.java
+```
+
+write:
+
+```java
+package Creational.Singleton;
+```
+
+Inside:
+
+```
+Structural/Adapter/Adapter.java
+```
+
+write:
+
+```java
+package Structural.Adapter;
+```
+
+---
+
+
+
+
+
+
+
+
+
+### 3. Use **Run Java**, not Code Runner
+
+Use:
+
+✅ The Java extension Run button:
+
+```
+Run | Debug
+```
+
+or
+
+```
+Run Java
+```
+
+Avoid:
+
+❌ Code Runner extension button
+
+because it creates:
+
+```
+tempCodeRunnerFile.java
+```
+
+and breaks Java package rules.
+
+---
+
+
+
+
+
+
+
+### 4. If VS Code again says "incorrect package"
+
+Don't change your code.
+
+Do this:
+
+```
+Ctrl + Shift + P
+```
+
+Search:
+
+```
+Java: Clean Java Language Server Workspace
+```
+
+Restart VS Code.
+
+Usually this happens because VS Code cached the old project location.
+
+---
+
+
+
+
+
+
+
+### 5. If you create a new package later
+
+Example: You create Factory pattern.
+
+Folder:
+
+```
+CSE-213_Design_Pattern
+└── Creational
+    └── Factory
+        └── CarFactory.java
+```
+
+At the top:
+
+```java
+package Creational.Factory;
+```
+
+Then Run Java will automatically understand it.
+
+---
+
+So the golden rule:
+
+```
+Project root opened in VS Code
+        ↓
+Folder structure matches package name
+        ↓
+Use Run Java, not Code Runner
+```
+
+Follow this and you won't face package errors again.
