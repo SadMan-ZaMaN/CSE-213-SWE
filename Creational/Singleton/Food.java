@@ -25,6 +25,50 @@ public class Food implements java.io.Serializable{     // """  implements Serial
 
 
 
+
+/*  
+
+import java.io.Serializable;
+
+public class Food implements Serializable {
+    
+    // 1. Mark as volatile for thread-safe lazy loading
+    private static volatile Food food = null;
+
+    // 2. Private constructor (prevents reflection attacks)
+    private Food() {
+        if (food != null) {
+            throw new RuntimeException("Use getFood() to get the instance.");
+        }
+    }
+
+    // 3. Thread-safe Double-Checked Locking
+    public static Food getFood() {
+        if (food == null) {
+            synchronized (Food.class) {
+                if (food == null) {
+                    food = new Food();
+                }
+            }
+        }
+        return food;
+    }
+
+    // 4. PREVENT SERIALIZATION BREAKAGE:
+    // This hook is automatically called during deserialization.
+    protected Object readResolve() {
+        return getFood();
+    }
+}
+
+
+*/
+
+
+
+
+
+
 /*
 
 1. Constructor private rakha hoyeche, jate onno class theke Food class er object create kora na jai.
