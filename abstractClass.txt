@@ -1,0 +1,552 @@
+A lot of students get confused because most "Abstract Factory" examples online are actually **Factory Method** examples.
+
+Your code:
+
+```
+Employees Factory
+        |
+        +---- AndroidFactory -> AndroidDeveloper
+        |
+        +---- WebFactory -> WebDeveloper
+```
+
+creates **one type of object** (`Employee`), so it's essentially the **Factory Method** pattern.
+
+A **real Abstract Factory** creates a **family of related objects**.
+
+---
+
+# Example
+
+Imagine we're building a company.
+
+Different departments need
+
+* Developers
+* Managers
+
+For an **Android team**
+
+* Android Developer
+* Android Manager
+
+For a **Web team**
+
+* Web Developer
+* Web Manager
+
+Notice each factory creates **multiple related objects.**
+
+---
+
+# Step 1 : Product Interfaces
+
+There are **two products.**
+
+## Developer.java
+
+```java
+public interface Developer {
+
+    void develop();
+
+}
+```
+
+---
+
+## Manager.java
+
+```java
+public interface Manager {
+
+    void manage();
+
+}
+```
+
+Hierarchy
+
+```
+Developer (interface)
+
+Manager (interface)
+```
+
+---
+
+# Step 2 : Concrete Developers
+
+## AndroidDeveloper.java
+
+```java
+public class AndroidDeveloper implements Developer {
+
+    @Override
+    public void develop() {
+        System.out.println("Developing Android Application");
+    }
+
+}
+```
+
+---
+
+## WebDeveloper.java
+
+```java
+public class WebDeveloper implements Developer {
+
+    @Override
+    public void develop() {
+        System.out.println("Developing Website");
+    }
+
+}
+```
+
+Hierarchy
+
+```
+             Developer
+                 ^
+        ------------------
+        |                |
+AndroidDeveloper    WebDeveloper
+```
+
+---
+
+# Step 3 : Concrete Managers
+
+## AndroidManager.java
+
+```java
+public class AndroidManager implements Manager {
+
+    @Override
+    public void manage() {
+        System.out.println("Managing Android Team");
+    }
+
+}
+```
+
+---
+
+## WebManager.java
+
+```java
+public class WebManager implements Manager {
+
+    @Override
+    public void manage() {
+        System.out.println("Managing Web Team");
+    }
+
+}
+```
+
+Hierarchy
+
+```
+              Manager
+                 ^
+        -----------------
+        |               |
+AndroidManager    WebManager
+```
+
+---
+
+# Step 4 : Abstract Factory
+
+Now comes the important part.
+
+```java
+public interface CompanyFactory {
+
+    Developer createDeveloper();
+
+    Manager createManager();
+
+}
+```
+
+Notice
+
+It creates
+
+* Developer
+* Manager
+
+not just one object.
+
+Hierarchy
+
+```
+                CompanyFactory
+                      ^
+          -------------------------
+          |                       |
+ AndroidFactory            WebFactory
+```
+
+---
+
+# Step 5 : Android Factory
+
+```java
+public class AndroidFactory implements CompanyFactory {
+
+    @Override
+    public Developer createDeveloper() {
+        return new AndroidDeveloper();
+    }
+
+    @Override
+    public Manager createManager() {
+        return new AndroidManager();
+    }
+
+}
+```
+
+This factory creates the **Android family.**
+
+```
+AndroidFactory
+
+creates
+
+AndroidDeveloper
+
+AndroidManager
+```
+
+---
+
+# Step 6 : Web Factory
+
+```java
+public class WebFactory implements CompanyFactory {
+
+    @Override
+    public Developer createDeveloper() {
+        return new WebDeveloper();
+    }
+
+    @Override
+    public Manager createManager() {
+        return new WebManager();
+    }
+
+}
+```
+
+Creates
+
+```
+WebDeveloper
+
+WebManager
+```
+
+---
+
+# Step 7 : Client
+
+```java
+public class Client {
+
+    public static void main(String[] args) {
+
+        CompanyFactory factory;
+
+        factory = new AndroidFactory();
+
+        Developer developer = factory.createDeveloper();
+        Manager manager = factory.createManager();
+
+        developer.develop();
+        manager.manage();
+
+        System.out.println();
+
+        factory = new WebFactory();
+
+        developer = factory.createDeveloper();
+        manager = factory.createManager();
+
+        developer.develop();
+        manager.manage();
+
+    }
+
+}
+```
+
+Output
+
+```
+Developing Android Application
+Managing Android Team
+
+Developing Website
+Managing Web Team
+```
+
+---
+
+# Complete Hierarchy
+
+```
+                           CompanyFactory
+                                  ^
+                 ------------------------------------
+                 |                                  |
+          AndroidFactory                      WebFactory
+                 |                                  |
+      ----------------------             ----------------------
+      |                    |             |                    |
+createDeveloper()   createManager() createDeveloper() createManager()
+      |                    |             |                    |
+      V                    V             V                    V
+AndroidDeveloper   AndroidManager   WebDeveloper      WebManager
+      ^                    ^             ^                  ^
+      |                    |             |                  |
+      +-------- Developer--+             +------Manager-----+
+```
+
+A clearer view by separating the two product hierarchies:
+
+```
+Product Hierarchy #1
+
+Developer
+    ^
+    |
+-------------------------
+|                       |
+AndroidDeveloper   WebDeveloper
+
+
+Product Hierarchy #2
+
+Manager
+   ^
+   |
+-------------------------
+|                      |
+AndroidManager    WebManager
+
+
+Factory Hierarchy
+
+CompanyFactory
+      ^
+      |
+------------------------
+|                      |
+AndroidFactory    WebFactory
+```
+
+---
+
+# How the Calls Happen
+
+Suppose this line executes
+
+```java
+factory = new AndroidFactory();
+```
+
+Memory
+
+```
+factory
+   |
+   V
+AndroidFactory object
+```
+
+---
+
+Next
+
+```java
+Developer developer = factory.createDeveloper();
+```
+
+Since
+
+```
+factory
+```
+
+actually points to
+
+```
+AndroidFactory
+```
+
+Java calls
+
+```
+AndroidFactory.createDeveloper()
+```
+
+which returns
+
+```
+new AndroidDeveloper()
+```
+
+Memory
+
+```
+developer
+     |
+     V
+AndroidDeveloper object
+```
+
+---
+
+Next
+
+```java
+Manager manager = factory.createManager();
+```
+
+calls
+
+```
+AndroidFactory.createManager()
+```
+
+returns
+
+```
+AndroidManager
+```
+
+Memory
+
+```
+manager
+   |
+   V
+AndroidManager
+```
+
+---
+
+Next
+
+```java
+developer.develop();
+```
+
+Java checks the actual object.
+
+```
+developer
+
+↓
+
+AndroidDeveloper
+```
+
+So
+
+```
+AndroidDeveloper.develop()
+```
+
+runs.
+
+---
+
+Then
+
+```java
+manager.manage();
+```
+
+calls
+
+```
+AndroidManager.manage()
+```
+
+---
+
+When you switch factories:
+
+```java
+factory = new WebFactory();
+```
+
+everything changes automatically.
+
+```
+factory
+    |
+    V
+WebFactory
+```
+
+Now
+
+```
+factory.createDeveloper()
+```
+
+returns
+
+```
+WebDeveloper
+```
+
+and
+
+```
+factory.createManager()
+```
+
+returns
+
+```
+WebManager
+```
+
+Notice that **the client code never changes**—it still calls `createDeveloper()` and `createManager()`. Only the factory object changes, and the factory guarantees that all created objects belong to the same family (Android or Web).
+
+---
+
+# Why is this called **Abstract Factory**?
+
+The key idea is that a single factory creates an entire **family of related products**.
+
+| Factory        | Developer        | Manager        |
+| -------------- | ---------------- | -------------- |
+| AndroidFactory | AndroidDeveloper | AndroidManager |
+| WebFactory     | WebDeveloper     | WebManager     |
+
+If later you introduce an **iOS** team, you simply add:
+
+* `IOSDeveloper`
+* `IOSManager`
+* `IOSFactory`
+
+The client still writes:
+
+```java
+CompanyFactory factory = new IOSFactory();
+
+Developer developer = factory.createDeveloper();
+Manager manager = factory.createManager();
+```
+
+No client logic needs to know or care about the concrete classes. This ability to switch entire families of related objects by changing just the factory is what distinguishes the **Abstract Factory** pattern from the **Factory Method** pattern.
