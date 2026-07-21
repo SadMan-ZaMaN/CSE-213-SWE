@@ -1,0 +1,240 @@
+Since you've got 20-minute-per-question online exams (based on your two sample cards), speed and having a memorized/adaptable template matters more than perfect original code. Here's a full prep pack.
+
+## What to actually know cold
+
+1. **Intent of each pattern** (one sentence each — likely asked or implied)
+2. **The generic UML skeleton** for each (Creator/Product, AbstractFactory/ConcreteFactory, Director/Builder, Singleton class)
+3. **A working code template** you can adapt in <5 min by renaming classes
+4. **The keyword-to-pattern mapping** so you don't waste time deciding
+5. **Common "gotchas"** graders check for (private constructor, thread safety, no mixing, etc.)
+
+---
+
+
+
+
+## Cheat sheet content (if allowed, bring exactly this)
+
+### 1. Keyword → Pattern map
+| Keywords in question | Pattern |
+|---|---|
+| "one instance," "shared," "global access," "only one logger/connection/config" | **Singleton** |
+| "subclass decides," "one product, varies by type," "without specifying exact class" | **Factory Method** |
+| "families," "must not mix," "themes/platforms," "related objects" | **Abstract Factory** |
+| "step-by-step," "many optional parts," "same process different representations" | **Builder** |
+
+
+
+
+
+
+
+
+
+
+### 2. Singleton — minimal safe template
+```java
+public class MySingleton {
+    private static volatile MySingleton instance;
+    private MySingleton() { }
+    public static MySingleton getInstance() {
+        if (instance == null) {
+            synchronized (MySingleton.class) {
+                if (instance == null) instance = new MySingleton();
+            }
+        }
+        return instance;
+    }
+}
+```
+**Checklist graders look for:** private constructor, static getInstance(), lazy creation, (thread safety if mentioned).
+
+
+
+
+
+
+
+
+
+
+
+### 3. Factory Method — minimal template
+```java
+interface Product { void action(); }
+class ConcreteProductA implements Product { public void action(){ /*...*/ } }
+class ConcreteProductB implements Product { public void action(){ /*...*/ } }
+
+abstract class Creator {
+    protected abstract Product createProduct(); // factory method
+    public void operation() { Product p = createProduct(); p.action(); }
+}
+class CreatorA extends Creator {
+    protected Product createProduct() { return new ConcreteProductA(); }
+}
+```
+**Or the simpler "static factory" variant** (common in exams, like your ShapeFactory example):
+```java
+class ProductFactory {
+    public Product getProduct(String type) {
+        if (type.equalsIgnoreCase("A")) return new ConcreteProductA();
+        if (type.equalsIgnoreCase("B")) return new ConcreteProductB();
+        return null;
+    }
+}
+```
+**Checklist:** client never calls `new ConcreteProduct()` directly, one product interface, decision logic centralized.
+
+
+
+
+
+
+
+
+
+
+
+
+
+### 4. Abstract Factory — minimal template
+```java
+interface ProductA { void render(); }
+interface ProductB { void render(); }
+
+interface AbstractFactory {
+    ProductA createProductA();
+    ProductB createProductB();
+}
+
+class Family1Factory implements AbstractFactory {
+    public ProductA createProductA() { return new Family1ProductA(); }
+    public ProductB createProductB() { return new Family1ProductB(); }
+}
+class Family2Factory implements AbstractFactory {
+    public ProductA createProductA() { return new Family2ProductA(); }
+    public ProductB createProductB() { return new Family2ProductB(); }
+}
+
+class Client {
+    ProductA a; ProductB b;
+    void configure(AbstractFactory factory) {
+        a = factory.createProductA();
+        b = factory.createProductB();
+    }
+}
+```
+**Checklist:** ≥2 product types per family, one factory interface with multiple create methods, client only depends on abstractions, families never mix.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### 5. Builder — minimal template
+```java
+class Product {
+    private final String partA, partB, partC;
+    private Product(Builder b) { partA=b.partA; partB=b.partB; partC=b.partC; }
+
+    static class Builder {
+        private String partA, partB, partC;
+        public Builder partA(String v) { partA=v; return this; }
+        public Builder partB(String v) { partB=v; return this; }
+        public Builder partC(String v) { partC=v; return this; }
+        public Product build() { return new Product(this); }
+    }
+}
+// usage: new Product.Builder().partA("x").partB("y").build();
+```
+**Alternative (Director-based, matches your slides' UML exactly):**
+```java
+interface Builder { void buildPartA(); void buildPartB(); Product getResult(); }
+class ConcreteBuilder implements Builder {
+    private Product product = new Product();
+    public void buildPartA() { product.add("PartA"); }
+    public void buildPartB() { product.add("PartB"); }
+    public Product getResult() { return product; }
+}
+class Director {
+    void construct(Builder b) { b.buildPartA(); b.buildPartB(); }
+}
+```
+**Checklist:** private constructor on Product, fluent/chained setters OR Director-driven steps, final `build()`/`getResult()` returns immutable-ish object.
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Decision tree to write at the top of your cheat sheet
+
+```
+Does the question mention only ONE object that must be unique/shared? 
+   → Singleton
+
+Does it mention creating ONE type of object, but which subclass 
+varies by input?
+   → Factory Method
+
+Does it mention MULTIPLE related object types that must stay 
+consistent as a set (theme, platform, family)?
+   → Abstract Factory
+
+Does it mention ONE complex object built via many optional 
+steps/parts/configurations?
+   → Builder
+
+Two patterns both fit? (e.g., families + complex assembly) 
+   → They can be combined: Abstract Factory creates the family, 
+     Builder assembles each complex member.
+```
+
+---
+
+## Things to actively watch for while reading the question (based on your two sample cards)
+
+- **Private constructor requirement** — explicitly stated ("must not be directly accessible") → they're testing Singleton/Builder encapsulation, dock marks if you leave it public.
+- **"Must not mix X and Y"** — this is the Abstract Factory tell, make sure your factories are cleanly separated per family.
+- **"Thread synchronization... not required"** vs **required** — read carefully; don't waste time adding `synchronized` if explicitly told it's optional, and don't skip it if implied needed.
+- **Naming conventions given in the question** (e.g., "AuditLogger", "LightButton") — use their exact names; graders often pattern-match class names.
+- **20-minute time limit** — don't over-engineer. Interfaces + 2-3 concrete classes + client demo is enough. Skip extra design (no need for exception handling, no need for extra getters/setters beyond what's asked).
+
+---
+
+## Quick self-test before the exam
+Ask yourself for each pattern: *"What's the one sentence problem this solves?"*
+- Singleton → controlling access to a single shared instance
+- Factory Method → decoupling client from concrete product creation
+- Abstract Factory → guaranteeing families of products stay compatible
+- Builder → constructing complex objects step by step, independent of representation
+
+If you can say those four sentences instantly, you can identify the pattern in the first 30 seconds of reading any question — which is the main time-saver for a 20-minute slot.
+
+**One more tip:** since your cards had UML diagram fragments already given (like the underlined "Button/TextField" in A1), scan the card for any diagram or partial UML first — it usually tells you which pattern before you even finish reading the prose.
+
+Good luck tomorrow — want me to drill you with a rapid-fire round (I give scenario, you say pattern only, no code) to build that 30-second recognition speed?
