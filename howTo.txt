@@ -1,0 +1,48 @@
+Here's the quick mental checklist, keyed to phrases you'll see in exam questions:
+
+
+
+**Singleton** — "only one instance," "shared across the app," "global access point," "one instance throughout the application"
+- You need exactly **one** object, everyone reaches the *same* one.
+- No variation in what's being created — it's always the same class.
+- C1 (AuditLogger) is this: one shared logger, everyone taps into it.
+
+
+
+
+**Factory Method** — "subclass decides what to create," "one product type, but which concrete version varies," "create an object without specifying its exact class"
+- You're creating **one kind of thing**, but the exact subtype depends on input/context (e.g., `createShape("circle")` → `Circle`).
+- Usually has one factory method, one product hierarchy.
+- Signal: single product family, decision logic embedded in one factory.
+
+
+
+
+**Abstract Factory** — "families of related objects," "must not mix components," "different themes/platforms," "each family has multiple related products"
+- You're creating **multiple related objects that must stay consistent as a set** (Button + TextField + Dialog, all Light or all Dark).
+- Signal: more than one product type per "family," and a rule that says they can't be mixed.
+- A1 is this exactly: "must not mix components from different themes."
+
+
+
+
+**Builder** — "construct step-by-step," "many optional parameters," "same construction process, different representations," "complex object with lots of configuration"
+- You're creating **one complex object** that has many parts/options and would otherwise need a messy constructor with 10 parameters.
+- Signal: words like "configure," "step by step," "optional fields," or an object built piece by piece (e.g., building a `Pizza` with crust/toppings/size, or an HTTP `Request` with headers/body/params).
+
+
+
+
+
+**Fast disambiguation table:**
+
+| Question mentions... | Pattern |
+|---|---|
+| one shared object, global | Singleton |
+| one product, varies by type | Factory Method |
+| several related products, must match | Abstract Factory |
+| step-by-step construction, many options | Builder |
+
+**Trap to watch:** Abstract Factory vs Factory Method — if you see just *one* factory method producing *one* kind of object, it's Factory Method. If the factory has *multiple* creation methods producing a *coordinated set* of objects, it's Abstract Factory. A1 gave it away with "the application must not mix components from different themes" — that's the abstract factory tell.
+
+**Trap to watch:** Builder vs Abstract Factory — Builder is about *how* one complex object gets assembled (order of steps, optional parts). Abstract Factory is about *which family* a set of simpler objects belongs to. If the question emphasizes optional/variable configuration of a single object, it's Builder even if that object has sub-parts.
