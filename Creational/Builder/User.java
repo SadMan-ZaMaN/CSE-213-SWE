@@ -35,7 +35,7 @@ public class User {
     }
 
     // Inner class to create object of User class
-    static class UserBuilder {
+    static class UserBuilder {                              // static class
         private String userName;
         private String emailId;
         private String userId;
