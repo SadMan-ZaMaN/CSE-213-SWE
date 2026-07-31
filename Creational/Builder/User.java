@@ -5,7 +5,7 @@ public class User {
     private final String emailId;
     private final String userId;
 
-    private User(UserBuilder builder) {
+    private User(UserBuilder builder) {         // private constructer
         this.userName = builder.userName;
         this.emailId = builder.emailId;
         this.userId = builder.userId;
@@ -44,9 +44,9 @@ public class User {
         
         }
 
-        public UserBuilder setUserName(String userName) {
+        public UserBuilder setUserName(String userName) {          // UserBuilder 
             this.userName = userName;
-            return this;
+            return this;                                            // return this
         }
 
         public UserBuilder setEmailId(String emailId) {
