@@ -6,7 +6,7 @@ public class Main {
                 .setUserName("John Doe")
                 .setEmailId("john.doe@example.com")
                 .setUserId("12345")
-                .build();
+                .build();                           // If you don't call .build(), then you do not get a User object. You only have a UserBuilder object.
 
         System.out.println("User: " + user);        // toString() method will be called here
     }
