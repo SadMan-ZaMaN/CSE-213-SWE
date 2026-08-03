@@ -25,5 +25,9 @@ public class CompositeTest {
         computer.addComponent(cabinet);
         computer.addComponent(peripherals);
         computer.showPrice();
+
+        peripherals.showPrice();
+        cabinet.showPrice();
+        motherboard.showPrice();
     }
 }
