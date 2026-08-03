@@ -40,6 +40,14 @@ class Composite implements component{
         components.add(component);
     }
 
+    public List<component> getChildren() {
+        return components;
+    }
+
+    public void removeComponent(component component) {
+        components.remove(component);
+    }
+
     @Override
     public void showPrice() {
         System.out.println(name);
