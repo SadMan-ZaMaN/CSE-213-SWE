@@ -1,0 +1,148 @@
+Here is a cheat sheet to identify behavioral design patterns in exam scenarios.
+
+
+Here is the same decision guide formatted in plain text so it won't break when pasted into a `.txt` file or plain text editor.
+
+# ================================================================================
+BEHAVIORAL DESIGN PATTERNS - EXAM IDENTIFICATION CHEAT SHEET
+
+1. STRATEGY PATTERN
+
+---
+
+* Trigger Keywords: "interchangeable algorithms", "dynamic calculation", "choose
+method at runtime", "different behavior based on user selection"
+* Core Intent: Swap algorithms dynamically without changing the context class.
+* Key Code Clue: Context takes a strategy via setStrategy() or constructor.
+Strategies do NOT know about each other.
+* Exam Examples: Payment processing (Credit Card vs PayPal), Sorting methods,
+Route planning engines.
+
+2. STATE PATTERN
+
+---
+
+* Trigger Keywords: "state transitions", "tier changes", "modes (e.g., Active,
+Paused, Terminated)", "behavior changes dynamically as status changes"
+* Core Intent: Allow an object to alter its behavior when its internal state
+changes (behaves like a Finite State Machine).
+* Key Code Clue: State methods accept Context as a parameter and switch state
+(e.g., context.setState(new NextState())).
+* Exam Examples: Subscription tiers (Common -> Plus -> Lux), Vending machine
+states, Document approval workflows (Draft -> Review -> Published).
+
+
+
+3. OBSERVER PATTERN
+
+---
+
+* Trigger Keywords: "notify multiple components", "subscribe / unsubscribe",
+"event-driven updates", "one-to-many dependency", "publish changes"
+* Core Intent: Automatically update multiple dependent listener objects when a
+subject changes state.
+* Key Code Clue: Subject maintains a List and iterates over them in
+a notifyObservers() loop.
+* Exam Examples: Stock feed updating dynamic dashboard widgets, Raven message
+board notifying groups, Event listeners in UI toolkits.
+
+
+
+4. MEDIATOR PATTERN
+
+---
+
+* Trigger Keywords: "prevent direct communication between objects", "central
+hub / controller", "reduce coupling between M:N components", "talk via
+intermediate"
+* Core Intent: Centralize multi-object communication so objects never call
+each other directly.
+* Key Code Clue: Colleague objects hold a reference ONLY to the Mediator
+(e.g., hub.notify("EVENT", this)).
+* Exam Examples: Smart Home Automation Hub connecting devices, Air Traffic
+Control tower managing airplanes, Chat room servers.
+
+
+
+5. TEMPLATE METHOD PATTERN
+
+---
+
+* Trigger Keywords: "fixed steps / workflow", "invariant algorithm skeleton",
+"same overall sequence with minor sub-step customizations"
+* Core Intent: Define the invariant overall execution steps in a base class
+and defer specific step implementations to subclasses.
+* Key Code Clue: Abstract base class has a public final method executing
+ordered calls (step1(); step2(); step3();).
+* Exam Examples: Hospital patient visit processing, Data processing
+pipelines (Read -> Process -> Export), Build scripts (Compile -> Test -> Deploy).
+
+
+
+
+---
+
+### Key Signals in Question Prompts
+
+| Behavioral Pattern | Trigger Keywords in Problem Statement | Core Intent / Problem to Solve | Real-World Exam Examples |
+| --- | --- | --- | --- |
+| **Strategy** | *"interchangeable algorithms"*, *"dynamic calculation"*, *"choose method at runtime"*, *"different behavior based on user selection"* | Swap algorithms without changing the client. | Payment gateways (PayPal vs Credit Card), Sorting algorithms, Route planning algorithms. |
+| **State** | *"state transitions"*, *"tier changes"*, *"modes (e.g., Active, Paused, Terminated)"*, *"behavior changes dynamically as object status changes"* | Object acts like a dynamic state machine; behavior changes based on internal state. | Subscription tiers (Common $\rightarrow$ Plus $\rightarrow$ Lux), Vending machine states, Order status (Pending $\rightarrow$ Shipped).
+
+ |
+| **Observer** | *"notify multiple components"*, *"subscribe / unsubscribe"*, *"event-driven updates"*, *"one-to-many dependency"*, *"publish changes"* | Automatically update dependent objects when a core object changes. | Stock feed updates UI widgets, Raven notification board, Social media notification triggers.
+
+ |
+| **Mediator** | *"prevent direct communication between objects"*, *"central hub / controller"*, *"reduce coupling between M:N components"*, *"talk via intermediate"* | Centralize complex multi-object communication into a single hub. | Smart Home Hub connecting sensors & appliances, Air Traffic Control tower, Chat room server.
+
+ |
+| **Template Method** | *"fixed steps / workflow"*, *"invariant algorithm skeleton"*, *"same overall sequence with minor sub-step customizations"* | Preserve algorithm structure in base class; let subclasses override steps. | Hospital visit workflows, Data parsing pipelines (CSV/JSON), Automated test frameworks (setup $\rightarrow$ test $\rightarrow$ teardown).
+
+ |
+
+---
+
+### 3-Step Decision Flowchart for Exams
+
+```
+                                  [Exam Scenario]
+                                         │
+        Is there a fixed sequence of steps across all classes?
+                                 ├── YES ──> TEMPLATE METHOD
+                                 │
+                                 NO
+                                 │
+   Is it about ONE object notifying MULTIPLE listening objects of updates?
+                                 ├── YES ──> OBSERVER
+                                 │
+                                 NO
+                                 │
+   Do multiple objects need to talk, but ARE NOT allowed to call each other directly?
+                                 ├── YES ──> MEDIATOR
+                                 │
+                                 NO
+                                 │
+             Does the object change internal STATES dynamically 
+                  AND change its behavior based on that state?
+                                 ├── YES ──> STATE
+                                 │
+                                 NO ──> STRATEGY
+
+```
+
+---
+
+### State vs. Strategy (The Most Common Exam Trap)
+
+Because both patterns use composition (a Context object holding an interface reference), they look structural identical in code. Use these rules to differentiate them:
+
+* **State:** The object transitions between states automatically or via actions (State A transitions to State B). The client usually triggers an event, and the state object itself determines what state comes next.
+* **Strategy:** Algorithms are passed into the context by the client. The strategies do **not** know about each other and do not transition into one another.
+
+---
+
+### Observer vs. Mediator
+
+* **Observer:** **One-Way Broadcast (1-to-N).** The Subject publishes updates; Observers passive listen and execute their own updates.
+* **Mediator:** **Two-Way Orchestration (M-to-N).** Colleague A notifies the Mediator, which actively commands Colleague B to act, centralizing the control logic in the hub.
+
